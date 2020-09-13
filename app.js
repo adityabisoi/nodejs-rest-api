@@ -7,8 +7,9 @@ const mongoose = require('mongoose')
 const productsRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 
-mongoose.connect('mongodb+srv://restDB:'+process.env.MONGO_ATLAS_PASS+'@rest-api-node.cogjx.mongodb.net/restDB?retryWrites=true&w=majority',{
-    useMongoClient: true
+mongoose.connect('mongodb+srv://restDB:' + process.env.MONGO_ATLAS_PASS + '@rest-api-node.cogjx.mongodb.net/restDB?retryWrites=true&w=majority', {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
 })
 
 app.use(morgan('dev'))
@@ -22,8 +23,8 @@ app.use((req, res, next) => {
     res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-    if(req.method === 'OPTIONS'){
-        res.header('Access-Control-Allow-Methods','GET, POST, PUT, PATCH, DELETE')
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
         return res.status(200).json({})
     }
     next()
