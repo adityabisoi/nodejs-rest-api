@@ -58,15 +58,36 @@ router.get('/:productId', (req, res, next) => {
 
 router.patch('/:productId', (req, res, next) => {
     const id = req.params.productId
-    res.status(200).json({
-        message: `Id for patch is ${id}`
+    updateParams = {}
+    for (const params of req.body) {
+        updateParams[params.paramName] = params.value
+    }
+    Product.update({
+        _id: id
+    }, {
+        $set: updateParams
+    }).exec().then((data) => {
+        console.log(data)
+        res.status(200).json(data)
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
     })
 })
 
 router.delete('/:productId', (req, res, next) => {
     const id = req.params.productId
-    res.status(200).json({
-        message: `Id for delete is ${id}`
+    Product.remove({
+        _id: id
+    }).exec().then((data) => {
+        res.status(200).json(data)
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
     })
 })
 
