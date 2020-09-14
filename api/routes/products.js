@@ -8,9 +8,19 @@ router.get('/', (req, res, next) => {
         .select('_id name price')
         .exec()
         .then((data) => {
-            const response={
+            const response = {
                 count: data.length,
-                products: data
+                products: data.map((res) => {
+                    return {
+                        name: res.name,
+                        price: res.price,
+                        _id: res._id,
+                        request: {
+                            type: 'GET',
+                            url: `http://localhost:3000/products/${res._id}`
+                        }
+                    }
+                })
             }
             res.status(200).json(response)
         })
@@ -31,7 +41,7 @@ router.post('/', (req, res, next) => {
         .then((result) => {
             console.log(result)
             res.status(201).json({
-                message: '/products POST',
+                message: 'Product created successfully',
                 createdProduct: product
             })
         })
