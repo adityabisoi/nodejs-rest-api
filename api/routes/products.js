@@ -4,9 +4,15 @@ const mongoose = require('mongoose')
 const Product = require('../models/product')
 
 router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: '/products GET'
-    })
+    Product.find().then((data) => {
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch((err) => {
+            res.status(500).json({
+                error: err
+            })
+        })
 })
 
 router.post('/', (req, res, next) => {
@@ -52,14 +58,14 @@ router.get('/:productId', (req, res, next) => {
 
 router.patch('/:productId', (req, res, next) => {
     const id = req.params.productId
-    req.status(200).json({
+    res.status(200).json({
         message: `Id for patch is ${id}`
     })
 })
 
 router.delete('/:productId', (req, res, next) => {
     const id = req.params.productId
-    req.status(200).json({
+    res.status(200).json({
         message: `Id for delete is ${id}`
     })
 })
