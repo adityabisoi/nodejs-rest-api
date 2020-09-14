@@ -49,17 +49,25 @@ router.get('/:orderId', (req, res, next) => {
             })
         })
         .catch((err) => {
-            res.status(500).json({
-                error: err
-            })
+
         })
 })
 
 router.delete('/:orderId', (req, res, next) => {
-    const id = req.params.orderId
-    res.status(200).json({
-        message: `Id for delete is ${id}`
-    })
+    const orderId = req.params.orderId
+    Order.remove({
+            _id: req.params.orderId
+        }).exec()
+        .then((data) => {
+            res.status(200).json({
+                message: 'Order deleted'
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                error: err
+            })
+        })
 })
 
 module.exports = router
