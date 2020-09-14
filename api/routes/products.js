@@ -17,20 +17,36 @@ router.post('/', (req, res, next) => {
     })
     product.save().then((result) => {
             console.log(result)
+            res.status(201).json({
+                message: '/products POST',
+                createdProduct: product
+            })
         })
         .catch((err) => {
             console.log(err)
+            res.status(500).json({
+                error: err
+            })
         })
-    res.status(201).json({
-        message: '/products POST',
-        createdProduct: product
-    })
 })
 
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId
-    req.status(200).json({
-        message: `Id for get is ${id}`
+    Product.findById(id).exec().then((data) => {
+        if (data) {
+            console.log(data)
+            res.status(200).json(data)
+        } else {
+            res.status(400).json({
+                message: 'No valid item found'
+            })
+        }
+
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
     })
 })
 
