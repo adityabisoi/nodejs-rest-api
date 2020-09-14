@@ -4,9 +4,15 @@ const mongoose = require('mongoose')
 const Product = require('../models/product')
 
 router.get('/', (req, res, next) => {
-    Product.find().then((data) => {
-            console.log(data)
-            res.status(200).json(data)
+    Product.find()
+        .select('_id name price')
+        .exec()
+        .then((data) => {
+            const response={
+                count: data.length,
+                products: data
+            }
+            res.status(200).json(response)
         })
         .catch((err) => {
             res.status(500).json({
@@ -21,7 +27,8 @@ router.post('/', (req, res, next) => {
         name: req.body.name,
         price: req.body.price
     })
-    product.save().then((result) => {
+    product.save()
+        .then((result) => {
             console.log(result)
             res.status(201).json({
                 message: '/products POST',
@@ -38,22 +45,23 @@ router.post('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
     const id = req.params.productId
-    Product.findById(id).exec().then((data) => {
-        if (data) {
-            console.log(data)
-            res.status(200).json(data)
-        } else {
-            res.status(400).json({
-                message: 'No valid item found'
-            })
-        }
+    Product.findById(id).exec()
+        .then((data) => {
+            if (data) {
+                console.log(data)
+                res.status(200).json(data)
+            } else {
+                res.status(400).json({
+                    message: 'No valid item found'
+                })
+            }
 
-    }).catch((err) => {
-        console.log(err)
-        res.status(500).json({
-            error: err
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
         })
-    })
 })
 
 router.patch('/:productId', (req, res, next) => {
@@ -63,32 +71,38 @@ router.patch('/:productId', (req, res, next) => {
         updateParams[params.paramName] = params.value
     }
     Product.update({
-        _id: id
-    }, {
-        $set: updateParams
-    }).exec().then((data) => {
-        console.log(data)
-        res.status(200).json(data)
-    }).catch((err) => {
-        console.log(err)
-        res.status(500).json({
-            error: err
+            _id: id
+        }, {
+            $set: updateParams
         })
-    })
+        .exec()
+        .then((data) => {
+            console.log(data)
+            res.status(200).json(data)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
+        })
 })
 
 router.delete('/:productId', (req, res, next) => {
     const id = req.params.productId
     Product.remove({
-        _id: id
-    }).exec().then((data) => {
-        res.status(200).json(data)
-    }).catch((err) => {
-        console.log(err)
-        res.status(500).json({
-            error: err
+            _id: id
         })
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json(data)
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
+        })
 })
 
 module.exports = router
